@@ -1,9 +1,15 @@
 import React, { useState, useRef } from "react";
 import Header from "./Header";
+
 import { validate } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
-  const [isSignInForm, setIsSignInForm] = useState(false);
+  const [isSignInForm, setIsSignInForm] = useState(true);
 
   const email = useRef(null);
   const password = useRef(null);
@@ -14,10 +20,40 @@ const Login = () => {
   const handleButtonClick = (e) => {
     e.preventDefault();
     const message = validate(email.current.value, password.current.value);
-    // console.log(email.current.value);
-    // console.log(password.current.value);
     setErrorMessage(message);
-    console.log(message);
+    if (message) return;
+    if (isSignInForm) {
+      // Sign in
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    } else {
+      // sign up
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    }
   };
   return (
     <div>
@@ -35,7 +71,7 @@ const Login = () => {
           placeholder="Email"
           className="p-4 my-4 w-full bg-gray-700"
         ></input>
-        {isSignInForm && (
+        {!isSignInForm && (
           <input
             type="text"
             placeholder="Name"
