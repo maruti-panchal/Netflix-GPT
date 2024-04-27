@@ -1,9 +1,10 @@
 import "./App.css";
+import Body from "./Body";
 
 function App() {
   return (
     <div className="App">
-      <h1 className="text-red-700">Hello World</h1>
+      <Body />
     </div>
   );
 }
