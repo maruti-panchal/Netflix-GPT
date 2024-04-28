@@ -11,6 +11,7 @@ import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { USER_AVTAR } from "../utils/constatnts";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -40,7 +41,6 @@ const Login = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           console.log(user);
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -58,8 +58,7 @@ const Login = () => {
           const user = userCredential.user;
           updateProfile(user, {
             displayName: name.current.value,
-            photoURL:
-              "https://img.freepik.com/free-photo/3d-illustration-teenage-boy-with-glasses-happy-expression_1142-54761.jpg?size=338&ext=jpg&ga=GA1.1.1224184972.1714089600&semt=ais",
+            photoURL: USER_AVTAR ,
           })
             .then(() => {
               const { uid, email, displayName, photoURL } = auth.currentUser;
@@ -71,12 +70,10 @@ const Login = () => {
                   photoURL: photoURL,
                 })
               );
-              navigate("/browse");
             })
             .catch((error) => {
               setErrorMessage(error.message);
             });
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
